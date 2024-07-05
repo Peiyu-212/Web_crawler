@@ -12,6 +12,7 @@ psycopg2-binary = "*"
 beautifulsoup4 = "==4.12.3"
 lxml = "*"
 pillow = "*"
+pytz = "*"
 
 [dev-packages]
 

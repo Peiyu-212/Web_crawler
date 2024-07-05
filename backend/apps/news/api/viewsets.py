@@ -1,6 +1,5 @@
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 
 from ..models import News
@@ -8,7 +7,7 @@ from .data_crawler import NBANewsCrawler
 from .serializer import NewsSerializer
 
 
-class NewsViewSet(viewsets.GenericViewSet, ListModelMixin):
+class NewsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
 

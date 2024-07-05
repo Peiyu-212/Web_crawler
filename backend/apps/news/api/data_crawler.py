@@ -17,7 +17,7 @@ class NBANewsCrawler:
         img_content = soup_txt.find('figure').img
         img_response = requests.get(img_content.get('src'))
         img_data = img_response.content
-        img_path = os.path.join(settings.MEDIA_ROOT,
+        img_path = os.path.join(settings.MEDIA_URL,
                                 f'image_{datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}.jpg')
         with open(img_path, 'wb') as img_file:
             img_file.write(img_data)

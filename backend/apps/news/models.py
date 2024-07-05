@@ -7,7 +7,7 @@ from django.db.models.functions import Now
 class Image(models.Model):
     title = models.CharField(max_length=200)
     url = models.URLField()
-    filepath = models.CharField(max_length=200)
+    filepath = models.ImageField(upload_to='images/')
 
 
 class News(models.Model):
