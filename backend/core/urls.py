@@ -29,4 +29,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include((api_urlpatterns, 'api/'))),
     path('home/', views.home_news, name='overall_news')
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

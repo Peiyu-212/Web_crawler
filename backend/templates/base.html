@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +13,7 @@
 				<h1>Recent News</h1>
 		</div>
 		<div class="detail-container"></div>
+		<div id="toastContainer" aria-live="assertive" aria-atomic="true" class="position-absolute p-3 top-0 end-0"></div>
 	</div>
 	<script>
 		$(document).ready(function() {
@@ -21,8 +23,8 @@
 				success: function(data) {
 					for (var i = 0; i < data.length; i++) {
 							var article = data[i];
-							var html = '<div class="article card pt-2 col-md-4" style="width: 25rem;">';
-							html += '<img src="'+ article.photo.url + '" class="card-img-top">';
+							var html = '<div class="article card mx-2 my-2 col-md-4" style="width: 25rem;">';
+							html += '<img src=' + article.photo.filepath + ' class="card-img-top">';
 							html += '<div class="card-body">';
 							html += '<h5>' + article.title + '</h5>';
 							html += '<span class="btn btn-primary read-more" data-article-id=' + article.id + '>Read more</span>';
@@ -37,23 +39,23 @@
 									url: "/api/news/" + articleId + "/",
 									method: "GET",
 									success: function(article) {
-											var detailHtml = '<div class="article-detail">';
-											detailHtml += '<h2>' + article.title + '</h2>';
-											detailHtml += '<div>' + article.news_time + ' ' + article.authority + '</div>'
-											if (article.photo) {
-													detailHtml += '<img src="' + article.photo.url + '" alt="' + article.photo.title + '" class="img-fluid">';
-													detailHtml += '<figcaption>' + article.photo.title + '</figcaption><p></p>'
-											}
-											detailHtml += '<p> ' + article.content + ' </p>';
+										var detailHtml = '<div class="article-detail">';
+										detailHtml += '<h2>' + article.title + '</h2>';
+										detailHtml += '<div>' + article.news_time + ' ' + article.authority + '</div>'
+										if (article.photo) {
+												detailHtml += '<img src=' + article.photo.filepath + ' alt="' + article.photo.title + '" class="img-fluid">';
+												detailHtml += '<figcaption>' + article.photo.title + '</figcaption><p></p>'
+										}
+										detailHtml += '<p> ' + article.content + ' </p>';
 
-											detailHtml += '<button class="btn btn-secondary back-to-list">返回列表</button>';
-											detailHtml += '</div>';
+										detailHtml += '<button class="btn btn-secondary back-to-list">返回列表</button>';
+										detailHtml += '</div>';
 
-											$(".detail-container").html(detailHtml);
-											$(".list-articles").hide();
+										$(".detail-container").html(detailHtml);
+										$(".list-articles").hide();
 									},
 									error: function(xhr, status, error) {
-											console.error("AJAX Error: ", status, error);
+										console.error("AJAX Error: ", status, error);
 									}
 							});
 					});
@@ -63,13 +65,13 @@
 						$(".list-articles").show();
 
 					});
-
 				},
 				error: function(xhr, status, error) {
-						console.error("AJAX Error: ", status, error);
+					console.error("AJAX Error: ", status, error);
 				}
 			});
 		});
 	</script>
+	<script src="{% static 'js/newsocket.js' %}"></script>
 </body>
 </html>

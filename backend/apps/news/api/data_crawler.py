@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import datetime
 
 import requests
@@ -13,18 +14,29 @@ class NBANewsCrawler:
     url = 'https://tw-nba.udn.com/nba/index'
     res = requests.get(url)
 
-    def get_img_url(self, soup_txt) -> str:
+    def get_img_filename(self, url: str) -> str:
+        match = re.search(r'/photo/(\d{4})/(\d{2})/(\d{2})/(\d+)/(\d+)\.jpg', url)
+        year = match.group(1)
+        month = match.group(2)
+        day = match.group(3)
+        unique_part1 = match.group(4)
+        unique_part2 = match.group(5)
+        result = f"{year}_{month}_{day}_{unique_part1}_{unique_part2}.jpg"
+        return result
+
+    def get_img_url(self, soup_txt: object) -> str:
         img_content = soup_txt.find('figure').img
         img_response = requests.get(img_content.get('src'))
         img_data = img_response.content
-        img_path = os.path.join(settings.MEDIA_URL,
-                                f'image_{datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}.jpg')
+        img_name = self.get_img_filename(img_content.get('src'))
+        img_path = os.path.join(settings.MEDIA_ROOT, img_name)
         with open(img_path, 'wb') as img_file:
             img_file.write(img_data)
+
         image = Image.objects.create(
             title=img_content.get('alt'),
             url=img_content.get('src'),
-            filepath=img_path
+            filepath=img_name
         )
         return image
 
@@ -33,17 +45,20 @@ class NBANewsCrawler:
             **obj
         )
 
-    def catch_different_news(self) -> None:
+    def catch_different_news(self, number) -> None:
         soup = BeautifulSoup(self.res.text, 'lxml')
         focus_links = soup.find_all('div', class_='box_body')[0]
         news_links = focus_links.find_all('a')
-
-        for link in news_links:
+        news_links_num = news_links if number == 0 else news_links[:int(number)]
+        for link in news_links_num:
             news_url = link.get('href')
             news_response = requests.get(news_url)
             news_response.encoding = 'utf-8'
             news_soup = BeautifulSoup(news_response.text, 'lxml')
             news_title = link.get('title')
+            news_exists = News.objects.filter(title=news_title)
+            if news_exists.exists():
+                continue
             author_div = news_soup.find('div', class_='shareBar__info--author')
             if author_div:
                 time_span = author_div.find('span').get_text(strip=True)

@@ -8,13 +8,13 @@ from .serializer import NewsSerializer
 
 
 class NewsViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = News.objects.all()
+    queryset = News.objects.all().order_by('-news_time')
     serializer_class = NewsSerializer
 
     @action(detail=False, methods=['GET'])
     def crawler(self, request):
         try:
-            NBANewsCrawler().catch_different_news()
+            NBANewsCrawler().catch_different_news(number=request.query_params.get('number', 0))
         except Exception as e:
             print(e)
             return Response(e, status=status.HTTP_400_BAD_REQUEST)

@@ -16,6 +16,7 @@ class NewsSerializer(serializers.ModelSerializer):
         local_tz = pytz.timezone('Asia/Taipei')
         local_time = instance.news_time.astimezone(local_tz)
         representation['news_time'] = local_time.strftime('%Y-%m-%d %H:%M:%S')
-        representation['photo'] = {"url": instance.photo.url,
-                                   "title": instance.title}
+        representation['photo'] = {"filepath": instance.photo.filepath.url,
+                                   "url": instance.photo.url,
+                                   "title": instance.photo.title}
         return representation
