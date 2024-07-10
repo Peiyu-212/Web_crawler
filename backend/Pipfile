@@ -16,6 +16,7 @@ pytz = "*"
 channels = "*"
 daphne = "*"
 channels-redis = "*"
+uwsgi = "*"
 
 [dev-packages]
 

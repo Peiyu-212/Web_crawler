@@ -1,22 +1,15 @@
-"""
-ASGI config for crawler project.
+import os  # noqa
 
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/5.0/howto/deployment/asgi/
-"""
-
-import os
-
-from apps.news.urls import socket_urlpatterns
-from channels.auth import AuthMiddlewareStack
-from channels.routing import ProtocolTypeRouter, URLRouter
-
-from django.core.asgi import get_asgi_application
+import django  # noqa
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
-django_asgi_app = get_asgi_application()
+django.setup()
+
+from apps.news.urls import socket_urlpatterns  # noqa
+from channels.auth import AuthMiddlewareStack  # noqa
+from channels.routing import ProtocolTypeRouter, URLRouter  # noqa
+
+from django.core.asgi import get_asgi_application  # noqa
 
 application = ProtocolTypeRouter({
     # http request
