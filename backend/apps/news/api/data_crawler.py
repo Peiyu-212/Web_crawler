@@ -49,7 +49,7 @@ class NBANewsCrawler:
         soup = BeautifulSoup(self.res.text, 'lxml')
         focus_links = soup.find_all('div', class_='box_body')[0]
         news_links = focus_links.find_all('a')
-        news_links_num = news_links if number == 0 else news_links[:int(number)]
+        news_links_num = news_links if number == '0' else news_links[:int(number)]
         for link in news_links_num:
             news_url = link.get('href')
             news_response = requests.get(news_url)

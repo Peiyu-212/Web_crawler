@@ -31,7 +31,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('IS_DEV', default=False)
-
+MODE = env('MODE')
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 
@@ -146,13 +146,20 @@ MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
 
 CHANNEL_LAYERS = {
-    'default': {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
-        },
-    },
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
 }
+
+if MODE in ["QAS"]:
+    CHANNEL_LAYERS = {
+        'default': {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": ['redis://redis:' + env('DOCKER_REDIS_PORT') + '/0'],
+            },
+        },
+    }
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
